@@ -1,5 +1,6 @@
 import Rezervare from "../components/Rezervare";
 import Ruta from "../components/Ruta";
+import Recomandare from "../components/Recomandare";
 
 function ClientPage({ utilizator, logout }) {
 
@@ -24,6 +25,8 @@ function ClientPage({ utilizator, logout }) {
             <Rezervare utilizator={utilizator} />
 
             <Ruta />
+
+            <Recomandare />
 
         </div>
     );
