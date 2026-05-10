@@ -39,7 +39,7 @@ function Recomandare() {
 
         <div className="card">
 
-            <h2>Recomandare inteligenta tren</h2>
+            <h2>Recomandare  tren</h2>
 
             <select
                 value={statiePlecareId}

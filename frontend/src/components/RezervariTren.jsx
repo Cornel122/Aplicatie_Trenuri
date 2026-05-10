@@ -1,107 +1,40 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 
-function RutaCrud() {
-
-    const [rute, setRute] = useState([]);
+function RezervariTren() {
 
     const [trenuri, setTrenuri] = useState([]);
 
-    const [statii, setStatii] = useState([]);
-
-    const [rutaId, setRutaId] = useState("");
-
     const [trenId, setTrenId] = useState("");
 
-    const [statiePlecareId, setStatiePlecareId] = useState("");
-
-    const [statieSosireId, setStatieSosireId] = useState("");
-
-    const [oraPlecare, setOraPlecare] = useState("");
-
-    const [oraSosire, setOraSosire] = useState("");
-
-    const [mesaj, setMesaj] = useState("");
+    const [rezervari, setRezervari] = useState([]);
 
     useEffect(() => {
-        incarcaDate();
+        incarcaTrenuri();
     }, []);
 
-    const incarcaDate = async () => {
+    const incarcaTrenuri = async () => {
 
-        const trenuriResponse =
-            await api.get("/trenuri");
+        const response = await api.get("/trenuri");
 
-        const statiiResponse =
-            await api.get("/statii");
-
-        const ruteResponse =
-            await api.get("/admin/rute");
-
-        setTrenuri(trenuriResponse.data);
-
-        setStatii(statiiResponse.data);
-
-        setRute(ruteResponse.data);
+        setTrenuri(response.data);
     };
 
-    const corpRuta = () => ({
+    const veziRezervari = async () => {
 
-        tren: {
-            id: trenId
-        },
+        const response =
+            await api.get(
+                `/admin/trenuri/${trenId}/rezervari`
+            );
 
-        statiePlecare: {
-            id: statiePlecareId
-        },
-
-        statieSosire: {
-            id: statieSosireId
-        },
-
-        oraPlecare,
-
-        oraSosire
-    });
-
-    const adaugaRuta = async () => {
-
-        await api.post(
-            "/admin/rute",
-            corpRuta()
-        );
-
-        setMesaj("Ruta adaugata");
-
-        incarcaDate();
-    };
-
-    const modificaRuta = async () => {
-
-        await api.put(
-            `/admin/rute/${rutaId}`,
-            corpRuta()
-        );
-
-        setMesaj("Ruta modificata");
-
-        incarcaDate();
-    };
-
-    const stergeRuta = async () => {
-
-        await api.delete(`/admin/rute/${rutaId}`);
-
-        setMesaj("Ruta stearsa");
-
-        incarcaDate();
+        setRezervari(response.data);
     };
 
     return (
 
         <div className="card">
 
-            <h2>Administrare rute</h2>
+            <h2>Rezervari tren</h2>
 
             <select
                 value={trenId}
@@ -114,7 +47,10 @@ function RutaCrud() {
 
                 {trenuri.map((tren) => (
 
-                    <option key={tren.id} value={tren.id}>
+                    <option
+                        key={tren.id}
+                        value={tren.id}
+                    >
                         {tren.numarTren}
                     </option>
 
@@ -122,78 +58,32 @@ function RutaCrud() {
 
             </select>
 
-            <button onClick={incarcaDate}>
-                Refresh date
+            <button onClick={veziRezervari}>
+                Vezi rezervari
             </button>
 
-            <select
-                value={statiePlecareId}
-                onChange={(e) => setStatiePlecareId(e.target.value)}
-            >
+            <div>
 
-                <option value="">
-                    Statie plecare
-                </option>
+                {rezervari.map((rezervare) => (
 
-                {statii.map((statie) => (
+                    <div
+                        key={rezervare.id}
+                        className="list-item"
+                    >
 
-                    <option key={statie.id} value={statie.id}>
-                        {statie.nume}
-                    </option>
+                        {rezervare.emailClient}
+                        {" - "}
+                        {rezervare.numarBilete}
+                        {" bilete"}
+
+                    </div>
 
                 ))}
 
-            </select>
-
-            <select
-                value={statieSosireId}
-                onChange={(e) => setStatieSosireId(e.target.value)}
-            >
-
-                <option value="">
-                    Statie sosire
-                </option>
-
-                {statii.map((statie) => (
-
-                    <option key={statie.id} value={statie.id}>
-                        {statie.nume}
-                    </option>
-
-                ))}
-
-            </select>
-
-            <input
-                placeholder="Ora plecare"
-                value={oraPlecare}
-                onChange={(e) => setOraPlecare(e.target.value)}
-            />
-
-            <input
-                placeholder="Ora sosire"
-                value={oraSosire}
-                onChange={(e) => setOraSosire(e.target.value)}
-            />
-
-            <button onClick={adaugaRuta}>
-                Adauga
-            </button>
-
-            <button onClick={modificaRuta}>
-                Modifica
-            </button>
-
-            <button onClick={stergeRuta}>
-                Sterge
-            </button>
-
-            <p className="message">
-                {mesaj}
-            </p>
+            </div>
 
         </div>
     );
 }
 
-export default RutaCrud;
+export default RezervariTren;
